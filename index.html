@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Решение Множества</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+        .main-window {
+            width: 90%;
+            height: 90%;
+            width: 640px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+            overflow: hidden;
+        }
+        .main-window:hover {
+            transform: scale(1.02);
+        }
+        .header {
+            text-align: center;
+            padding: 20px;
+            border-bottom: 2px solid #feb47b;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px 10px 0 0;
+        }
+        h1 {
+            font-size: 28pt;
+            font-weight: bold;
+            margin: 0;
+            color: #ff7e5f;
+        }
+        h2 {
+            font-size: 24pt;
+            font-weight: bold;
+            color: #ff7e5f;
+            margin: 10px 0;
+        }
+        .content {
+            margin-top: 20px;
+        }
+        .input-section, .result-section {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .combo-box {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            font-size: 16pt;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .combo-box:focus {
+            border-color: #ff7e5f;
+            outline: none;
+            box-shadow: 0 0 5px rgba(255, 126, 95, 0.5);
+        }
+        .line-edit {
+            width: calc(100% - 24px);
+            padding: 12px;
+            margin: 10px 0;
+            font-size: 16pt;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .line-edit:focus {
+            border-color: #ff7e5f;
+            outline: none;
+            box-shadow: 0 0 5px rgba(255, 126, 95, 0.5);
+        }
+        .result-label {
+            font-size: 15pt;
+            font-weight: bold;
+            margin: 5px 0;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 5px;
+            border: 1px solid #ff7e5f;
+            transition: background-color 0.3s;
+        }
+        .result-label:hover {
+            background-color: rgba(255, 126, 95, 0.1);
+        }
+        .result-label:last-child {
+            border: 2px solid #feb47b;
+        }
+        button {
+            background-color: #ff7e5f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16pt;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #feb47b;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+<div class="main-window">
+    <div class="header">
+        <h1>РЕШЕНИЕ МНОЖЕСТВ</h1>
+    </div>
+    <div class="content">
+        <div class="input-section">
+            <h2>ВВОД</h2>
+            <select class="combo-box" id="comboBox">
+                <option value="" disabled selected>Выберите пустое множество</option>
+                <option value="N1+N2">N1+N2</option>
+                <option value="N2+N3">N2+N3</option>
+                <option value="N1+N2+N3">N1+N2+N3</option>
+                <option value="N2">N2</option>
+            </select>
+            <input type="text" id="input1" placeholder="Введите первое множество (N1+N2), если пустое - 0" class="line-edit">
+            <input type="text" id="input2" placeholder="Введите второе множество (N2+N3), если пустое - 0" class="line-edit">
+            <input type="text" id="input3" placeholder="Введите третье множество (N1+N2+N3), если пустое - 0" class="line-edit">
+            <input type="text" id="input4" placeholder="Введите четвертое множество (N2), если пустое - 0" class="line-edit">
+            <button id="solveButton">Решить</button>
+            <button id="clearButton">Очистить</button>
+        </div>
+        <div class="result-section">
+            <h2>РЕШЕНИЕ</h2>
+            <div class="result-label" id="formulaLabel">Этап 1: (N1+N2) + (N2+N3) = (N1+N2+N3) + N2</div>
+            <div class="result-label" id="step2Label">Этап 2:</div>
+            <div class="result-label" id="step3Label">Этап 3:</div>
+            <div class="result-label" id="answerLabel">Ответ:</div>
+        </div>
+    </div>
+</div>
+<script>
+    const comboBox = document.getElementById('comboBox');
+    const input1 = document.getElementById('input1');
+    const input2 = document.getElementById('input2');
+    const input3 = document.getElementById('input3');
+    const input4 = document.getElementById('input4');
+    const step2Label = document.getElementById('step2Label');
+    const step3Label = document.getElementById('step3Label');
+    const answerLabel = document.getElementById('answerLabel');
+    comboBox.addEventListener('change', function() {
+        // Скрываем все поля ввода
+        input1.style.display = 'block';
+        input2.style.display = 'block';
+        input3.style.display = 'block';
+        input4.style.display = 'block';
+        // Очищаем содержимое и скрываем соответствующее поле
+        switch (comboBox.value) {
+            case 'N1+N2':
+                input1.value = ''; // Очищаем второе поле
+                input2.value = ''; // Очищаем второе поле
+                input3.value = ''; // Очищаем третье поле
+                input4.value = ''; // Очищаем четвертое поле
+                input1.style.display = 'none'; // Скрываем первое поле
+                break;
+            case 'N2+N3':
+                input1.value = ''; // Очищаем первое поле
+                input2.value = ''; // Очищаем первое поле
+                input3.value = ''; // Очищаем третье поле
+                input4.value = ''; // Очищаем четвертое поле
+                input2.style.display = 'none'; // Скрываем второе поле
+                break;
+            case 'N1+N2+N3':
+                input1.value = ''; // Очищаем первое поле
+                input2.value = ''; // Очищаем второе поле
+                input3.value = ''; // Очищаем второе поле
+                input4.value = ''; // Очищаем четвертое поле
+                input3.style.display = 'none'; // Скрываем третье поле
+                break;
+            case 'N2':
+                input1.value = ''; // Очищаем первое поле
+                input2.value = ''; // Очищаем второе поле
+                input3.value = ''; // Очищаем третье поле
+                input4.value = ''; // Очищаем третье поле
+                input4.style.display = 'none'; // Скрываем четвертое поле
+                break;
+            default:
+                input1.style.display = 'block';
+                input2.style.display = 'block';
+                input3.style.display = 'block';
+                input4.style.display = 'block';
+        }
+    });
+    document.getElementById('solveButton').addEventListener('click', function() {
+        // Обнуление содержимого всех этапов, кроме первого
+        step2Label.textContent = 'Этап 2:';
+        step3Label.textContent = 'Этап 3:';
+        answerLabel.textContent = 'Ответ:';
+
+        // Получаем значения из полей ввода и преобразуем их в числа
+        const value1 = parseFloat(input1.value.trim()) || 0; // Если пустое, то 0
+        const value2 = parseFloat(input2.value.trim()) || 0; // Если пустое, то 0
+        const value3 = parseFloat(input3.value.trim()) || 0; // Если пустое, то 0
+        const value4 = parseFloat(input4.value.trim()) || 0; // Если пустое, то 0
+        // Вывод значений после очистки без скобо
+
+        // Добавление логики для этапа 3 и расчёт ответа
+        if (comboBox.value === 'N2') {
+            const resultN2 = value1 + value2 - value3; // Выполняем математические действия
+            step2Label.textContent = `Этап 2: ${value1} + ${value2} = ${value3} + N2`;
+            step3Label.textContent = `Этап 3: N2 = ${value1} + ${value2} - ${value3}`;
+            answerLabel.textContent = `Ответ: N2 = ${resultN2}`;
+        } else if (comboBox.value === 'N2+N3') {
+            const resultN2N3 = value4 + value3 - value1; // Выполняем математические действия
+            step2Label.textContent = `Этап 2: ${value1} + N2+N3 = ${value3} + ${value4}`;
+            step3Label.textContent = `Этап 3: N2+N3 = ${value4} + ${value3} - ${value1}`;
+            answerLabel.textContent = `Ответ: N2+N3 = ${resultN2N3}`;
+        } else if (comboBox.value === 'N1+N2+N3') {
+            const resultN1N2N3 = value1 + value2 - value4; // Выполняем математические действия
+            step2Label.textContent = `Этап 2: ${value1} + ${value2} = N1+N2+N3 + ${value4}`;
+            step3Label.textContent = `Этап 3: N1+N2+N3 = ${value1} + ${value2} - ${value4}`;
+            answerLabel.textContent = `Ответ: N1+N2+N3 = ${resultN1N2N3}`;
+        } else if (comboBox.value === 'N1+N2') {
+            const resultN1N2 = value3 + value4 - value2; // Выполняем математические действия
+            step2Label.textContent = `Этап 2: N1+N2 + ${value2} = ${value3} + ${value4}`;
+            step3Label.textContent = `Этап 3: N1+N2 = ${value3} + ${value4} - ${value2}`;
+            answerLabel.textContent = `Ответ: N1+N2 = ${resultN1N2}`;
+        }
+    });
+    document.getElementById('clearButton').addEventListener('click', function() {
+        input1.value = ''; // Очищаем первое поле
+        input2.value = ''; // Очищаем второе поле
+        input3.value = ''; // Очищаем второе поле
+        input4.value = ''; // Очищаем четвертое поле
+
+        step2Label.textContent = 'Этап 2: ';
+        step3Label.textContent = 'Этап 3: ';
+        answerLabel.textContent = 'Ответ: ';
+    });
+
+
+    // Инициализация видимости полей
+    input1.style.display = 'block';
+    input2.style.display = 'block';
+    input3.style.display = 'block';
+    input4.style.display = 'block';
+</script>
+</body>
+</html>
